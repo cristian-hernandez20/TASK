@@ -3,7 +3,7 @@
     <v-card>
       <v-footer color="primary" height="60">
         <h1 class="white--text mx-auto">
-          {{ `${option.option_text == "save" ? "Guardar Tarea" : "Editar tarea"}` }}
+          {{ `${option.option_text == "save" ? "Crear Tarea" : "Editar tarea"}` }}
           <v-icon color="white" size="30">{{ option.icon }}</v-icon>
         </h1>
       </v-footer>
@@ -23,15 +23,7 @@
               <v-text-field v-model="form.hour" outlined dense type="time" placeholder="Hora" label="Hora"></v-text-field>
             </v-col>
             <v-col cols="12" sm="3" md="3" v-if="option.option_text == 'edit'">
-              <v-autocomplete
-                v-model="form.condition"
-                placeholder="Condición"
-                :items="condition"
-                label="Condición"
-                item-value="id"
-                outlined
-                dense
-              ></v-autocomplete>
+              <v-checkbox :label="form.description" v-model="form.condition" class="my-2" />
             </v-col>
           </v-row>
         </v-container>
@@ -58,23 +50,24 @@ export default {
 
   data() {
     return {
-      condition: [
-        { id: "complete", text: "Completada" },
-        { id: "incomplete", text: "Incompletada" },
-      ],
       form: {
         description: "",
         date: "",
         hour: "",
-        condition: "incomplete",
+        condition: "",
       },
       form_default: {
         description: "",
         date: "",
         hour: "",
-        condition: "incomplete",
+        condition: "",
       },
     };
+  },
+  watch: {
+    "form.condition"() {
+      this.form.condition = this.form.condition == "1" ? true : false;
+    },
   },
   methods: {
     ...mapActions({

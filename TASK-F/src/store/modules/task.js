@@ -52,6 +52,18 @@ export default {
         commit("_loadingState", null, { root: true });
       }
     },
+    async _putTaskFavorite({ commit }, { id_task, data }) {
+      try {
+        const RES = await postData({ header: {}, method: "PUT", url: `tasks/edit/${id_task}`, data });
+        if (RES.status == 200) {
+          commit("editTask", { list: "tasks", data: RES.data });
+          return RES;
+        }
+        return RES;
+      } catch (error) {
+        console.error("_putTask", error);
+      }
+    },
     async _deleteTask({ commit }, id_task) {
       try {
         commit("_loadingState", null, { root: true });

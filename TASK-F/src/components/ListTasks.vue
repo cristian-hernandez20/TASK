@@ -46,13 +46,13 @@
                   :search="search"
                 >
                   <template v-slot:[`item.condition`]="{ item }">
-                    <v-chip v-if="item.condition.toUpperCase() == 'INCOMPLETE'" color="accent" dark>
-                      INCOMPLETA
-                      <v-icon color="white" small class="botone ml-2"> mdi-timer-sand-complete </v-icon>
-                    </v-chip>
-                    <v-chip v-else color="green" dark>
+                    <v-chip v-if="item.condition == '1'" color="green" dark>
                       COMPLETADA
                       <v-icon color="white" small class="botone ml-2"> mdi-check-circle </v-icon>
+                    </v-chip>
+                    <v-chip v-else color="accent" dark>
+                      INCOMPLETA
+                      <v-icon color="white" small class="botone ml-2"> mdi-timer-sand-complete </v-icon>
                     </v-chip>
                   </template>
                   <template v-slot:[`item.favorite`]="{ item }">
@@ -87,6 +87,7 @@ export default {
     OptionTask,
   },
   mixins: [Alert],
+  name: "list-task",
   data: () => ({
     option: {
       state: false,
@@ -121,7 +122,7 @@ export default {
   async created() {
     await this._getTasks();
     this.desserts = this.getTasks("tasks");
-    console.log(this.desserts);
+    // console.log(this.desserts);
   },
 
   methods: {
@@ -129,6 +130,7 @@ export default {
       _getTasks: "task/_getTasks",
       _deleteTask: "task/_deleteTask",
       _putTask: "task/_putTask",
+      _putTaskFavorite: "task/_putTaskFavorite",
     }),
     createTask() {
       this.option = {
@@ -151,24 +153,28 @@ export default {
     deleteItem(item) {
       this.edit_index = this.desserts.indexOf(item);
       this.item_edit = Object.assign({}, item);
+
       this.option_task = "delete";
       this.sendAlert("DL-T", "warning", null, "P");
     },
     async editFavorite(item) {
-      let favorite = item.favorite;
-      favorite = favorite == "1" ? "0" : "1";
+      const indice = this.desserts.map((e) => e.id).indexOf(item.id);
+      this.desserts[indice] = item;
+
+      this.edit_index = this.desserts.indexOf(item);
+      this.desserts[this.edit_index].favorite = this.desserts[this.edit_index].favorite == "1" ? "0" : "1";
 
       const id_task = item.id;
       const data = {
-        favorite: favorite,
+        favorite: this.desserts[this.edit_index].favorite,
       };
-      let res = await this._putTask({ id_task, data });
+      let res = await this._putTaskFavorite({ id_task, data });
+
       if (res.status != 200) {
         setTimeout(() => {
           this.sendAlert("PUT-T-E", "success");
         }, 100);
       }
-      location.reload();
     },
     cancel() {
       this.deletAlert();
