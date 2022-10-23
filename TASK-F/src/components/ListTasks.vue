@@ -29,7 +29,7 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="2" lg="2" sm="2" md="2">
-                <v-btn color="primary" class="my-1" dark elevation="10" @click="createTask()">
+                <v-btn color="primary" class="my-1 botone" dark elevation="10" @click="createTask()">
                   Nueva tarea
                   <v-icon class="ml-2">mdi-book-plus</v-icon>
                 </v-btn>
@@ -45,6 +45,16 @@
                   :headers="headers"
                   :search="search"
                 >
+                  <template v-slot:[`item.condition`]="{ item }">
+                    <v-chip v-if="item.condition.toUpperCase() == 'INCOMPLETE'" color="accent" dark>
+                      INCOMPLETA
+                      <v-icon color="white" small class="botone ml-2"> mdi-timer-sand-complete </v-icon>
+                    </v-chip>
+                    <v-chip v-else color="green" dark>
+                      COMPLETADA
+                      <v-icon color="white" small class="botone ml-2"> mdi-check-circle </v-icon>
+                    </v-chip>
+                  </template>
                   <template v-slot:[`item.favorite`]="{ item }">
                     <v-icon small class="mr-2" :color="`${item.favorite == '1' ? 'yellow' : ''}`" @click="editFavorite(item)">
                       {{ `${item.favorite == "0" ? "mdi-star-outline" : "mdi-star"}` }}
@@ -96,6 +106,7 @@ export default {
       { text: "Descripción", value: "description" },
       { text: "Fecha", value: "date" },
       { text: "Hora", value: "hour" },
+      { text: "Condición", align: "center", value: "condition" },
       { text: "Favorito", align: "center", value: "favorite" },
       { text: "Actions", value: "actions", sortable: false },
     ],
@@ -107,10 +118,10 @@ export default {
   computed: {
     ...mapGetters({ _state_loading: "_stateLoading", getTasks: "task/getTasks" }),
   },
-
   async created() {
     await this._getTasks();
     this.desserts = this.getTasks("tasks");
+    console.log(this.desserts);
   },
 
   methods: {
@@ -152,7 +163,6 @@ export default {
         favorite: favorite,
       };
       let res = await this._putTask({ id_task, data });
-      console.log(this.getTasks("tasks"));
       if (res.status != 200) {
         setTimeout(() => {
           this.sendAlert("PUT-T-E", "success");
@@ -175,10 +185,19 @@ export default {
       this.option_task = "";
     },
 
-    deleteItemConfirm() {
+    async deleteItemConfirm() {
       const id_task = this.item_edit?.id;
-      this._deleteTask(id_task);
-      this.desserts.splice(this.edit_index, 1);
+      let res = await this._deleteTask(id_task);
+      if (res.status == 200) {
+        this.desserts.splice(this.edit_index, 1);
+        setTimeout(() => {
+          this.sendAlert("DL-T", "success");
+        }, 100);
+      } else {
+        setTimeout(() => {
+          this.sendAlert("DL-T-E", "error");
+        }, 100);
+      }
     },
   },
 };

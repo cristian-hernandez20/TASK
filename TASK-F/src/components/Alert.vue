@@ -23,13 +23,13 @@
                   </v-card-actions>
                 </v-col>
                 <v-col cols="6" lg="6" md="6" sm="6" class="py-2 my-0" v-if="btn_cancel">
-                  <v-btn ref="btn1" outlined color="success" width="110" class="botone ml-md-13 ml-sm-10" @click="confirm">
+                  <v-btn ref="btn1" color="success" width="110" class="botone ml-md-13 ml-sm-10" @click="confirm">
                     Aceptar
                     <v-icon>mdi-check</v-icon>
                   </v-btn>
                 </v-col>
                 <v-col cols="6" lg="6" md="6" sm="6" class="py-2 my-0" v-if="btn_cancel">
-                  <v-btn color="error" outlined width="110" @click="cancel" class="botone" ref="btn2">
+                  <v-btn color="error" width="110" @click="cancel" class="botone" ref="btn2">
                     cancelar
                     <v-icon>mdi-close-circle</v-icon>
                   </v-btn>
@@ -115,6 +115,12 @@ export default {
       switch (code) {
         case "POST-T-E":
           this.body = `La tarea no se pudo crear`;
+          break;
+        case "DL-T":
+          this.body = `La tarea se elimino`;
+          break;
+        case "DL-T-E":
+          this.body = `La tarea no se pudo eliminar`;
           break;
         case "POST-T":
           this.body = `Tarea creada correctamente`;

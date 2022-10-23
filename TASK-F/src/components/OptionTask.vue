@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="option.state" max-width="800px">
+  <v-dialog v-model="option.state" max-width="1000px">
     <v-card>
       <v-footer color="primary" height="60">
         <h1 class="white--text mx-auto">
@@ -13,22 +13,33 @@
       <v-card-text>
         <v-container>
           <v-row justify="center">
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="3" md="3">
               <v-text-field v-model="form.description" outlined dense type="text" placeholder="Descripción" label="Descripción"></v-text-field>
             </v-col>
-            <v-col cols="12" sm="3" md="4">
+            <v-col cols="12" sm="3" md="3">
               <v-text-field v-model="form.date" outlined dense type="date" maxlenght="10" placeholder="Fecha" label="Fecha"></v-text-field>
             </v-col>
-            <v-col cols="12" sm="3" md="4">
+            <v-col cols="12" sm="3" md="3">
               <v-text-field v-model="form.hour" outlined dense type="time" placeholder="Hora" label="Hora"></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="3" md="3" v-if="option.option_text == 'edit'">
+              <v-autocomplete
+                v-model="form.condition"
+                placeholder="Condición"
+                :items="condition"
+                label="Condición"
+                item-value="id"
+                outlined
+                dense
+              ></v-autocomplete>
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click="option.state = false"> Cancelar </v-btn>
-        <v-btn color="green" dark @click="optionTask()"> Guardar </v-btn>
+        <v-btn color="primary" class="botone" @click="option.state = false"> Cancelar </v-btn>
+        <v-btn color="green" class="botone" dark @click="optionTask()"> Guardar </v-btn>
       </v-card-actions>
     </v-card>
     <ALERT v-if="alert.state" :alert="alert" @exitEsc="cancel()" @cancel="cancel()" @confirm="confirm()"></ALERT>
@@ -47,15 +58,21 @@ export default {
 
   data() {
     return {
+      condition: [
+        { id: "complete", text: "Completada" },
+        { id: "incomplete", text: "Incompletada" },
+      ],
       form: {
         description: "",
         date: "",
         hour: "",
+        condition: "incomplete",
       },
       form_default: {
         description: "",
         date: "",
         hour: "",
+        condition: "incomplete",
       },
     };
   },
@@ -102,6 +119,7 @@ export default {
         description: this.form.description,
         date: this.form.date,
         hour: this.form.hour,
+        condition: this.form.condition,
       };
       let res = await this._putTask({ id_task, data });
 
