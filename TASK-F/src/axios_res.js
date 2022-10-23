@@ -1,6 +1,7 @@
 import { default as axios } from "axios";
 
-const URI = "http://localhost:9000/api/";
+// const URI = "http://localhost:9000/api/";
+const URI = "https://app-taks-prueba.herokuapp.com/api/";
 
 const axiosSc = ({ url, data = {}, method = "POST", header = {}, responseType = "json" }) => {
   return new Promise((resolve, reject) => {
