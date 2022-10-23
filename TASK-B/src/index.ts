@@ -36,7 +36,7 @@ async function dbConnection() {
 app.use("/api", tasks_route);
 
 app.get("/", (req, res) => {
-  res.send("API funcionado");
+  res.send("API funcionado :)");
 });
 
 app.listen(port, () => console.log("API lisening in the port: ", port));
